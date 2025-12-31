@@ -22,7 +22,10 @@ const problemPage = [
   key.sep,
   "tasks",
   key.sep,
-  key.contest + key.times + "_" + key.problem,
+  key.contest,
+  key.times,
+  "_",
+  key.problem,
 ];
 const contestPage = [key.domain, "contests", key.sep, key.contest, key.times];
 
@@ -35,7 +38,7 @@ const contestPage = [key.domain, "contests", key.sep, key.contest, key.times];
  */
 function createLink(contest: string, times: string, problem: string) {
   let page: string[];
-  if (problem == undefined) {
+  if (problem == "") {
     page = contestPage;
   } else {
     page = problemPage;
@@ -61,37 +64,36 @@ function createLink(contest: string, times: string, problem: string) {
  * @param document
  * @returns
  */
-function generateLinkObject(document: vscode.TextDocument, regex: RegExp) {
+function generateLinkObject(document: vscode.TextDocument, regex: RegExp, setLinks: Set<number>) {
   let links: vscode.DocumentLink[] = [];
   const matchedIter = document.getText().matchAll(regex);
-  let setLinks: Set<number> = new Set<number>();
   for (let i of matchedIter) {
-    const url = createLink(i[0].substring(0, 4), i[0].substring(4, 7), i[0].substring(7, 8));
+    if (setLinks.has(i.index)) {
+      continue;
+    }
+    const url = createLink(i[0].substring(0, 3), i[0].substring(3, 6), i[0].substring(6, 7));
     const matchedString: highlightString = {
       start: i.index,
       end: i.index + i[0].length,
       content: i[0],
       link: url,
     };
-
-    if (setLinks.has(matchedString.start)) {
-      continue;
-    }
     const startPos: vscode.Position = document.positionAt(matchedString.start);
     const endPos: vscode.Position = document.positionAt(matchedString.end);
     const linkRange: vscode.Range = new vscode.Range(startPos, endPos);
     const linkObject: vscode.Uri = vscode.Uri.parse(matchedString.link);
     links.push(new vscode.DocumentLink(linkRange, linkObject));
+    setLinks.add(i.index);
   }
   return links;
 }
 function addUrl(document: vscode.TextDocument, token: vscode.CancellationToken) {
-  console.log("<");
   let links: vscode.DocumentLink[] = [];
   const contestRegex = /[Aa][BRGHbrgh][Cc][0-9]{3}/g;
   const problemRegex = /[Aa][BRGHbrgh][Cc][0-9]{3}[A-Ha-h]/g;
-  links = links.concat(generateLinkObject(document, contestRegex));
-  links = links.concat(generateLinkObject(document, problemRegex));
+  let setLinks: Set<number> = new Set<number>();
+  links = links.concat(generateLinkObject(document, problemRegex, setLinks));
+  links = links.concat(generateLinkObject(document, contestRegex, setLinks));
   return links;
 }
 export { addUrl };
