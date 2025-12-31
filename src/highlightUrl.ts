@@ -1,42 +1,63 @@
 import * as vscode from "vscode";
-
+import * as CONST from "./const";
+/**
+ * ハイライト文字列のインターフェース
+ * 文書全体のハイライト位置とURLの情報を持つ
+ */
 interface highlightString {
+  /**
+   * 文書内のハイライト半開区間の開始位置
+   */
   start: number;
+  /**
+   * 文書内のハイライト半開区間の終了位置
+   * ※文書内のstartの後にハイライトが無くなる最初の文字の位置
+   */
   end: number;
-  content: string;
+  /**
+   * この区間に持たせるリンク情報
+   */
   link: string;
 }
-const key = {
-  domain: "https://atcoder.jp/",
-  contest: "{contest}",
-  times: "{times}",
-  problem: "{problem}",
-  sep: "/",
-};
-const problemPage = [
-  key.domain,
-  "contests",
-  key.sep,
-  key.contest,
-  key.times,
-  key.sep,
-  "tasks",
-  key.sep,
-  key.contest,
-  key.times,
-  "_",
-  key.problem,
-];
-const contestPage = [key.domain, "contests", key.sep, key.contest, key.times];
 
 /**
- * 必要な情報からコンテストか問題URLを取得する関数
- * @param contest コンテスト名(ABC/ARC/AGC/AHC)
+ * 問題ページの文字列を生成するためのトークン配列
+ */
+const problemPage = [
+  CONST.KEY_LINK.DOMAIN,
+  CONST.KEY_LINK.CONTESTS,
+  CONST.KEY_LINK.SEPARATER,
+  CONST.KEY_REPLACE.CONTESTS,
+  CONST.KEY_REPLACE.TIMES,
+  CONST.KEY_LINK.SEPARATER,
+  CONST.KEY_LINK.TASKS,
+  CONST.KEY_LINK.SEPARATER,
+  CONST.KEY_REPLACE.CONTESTS,
+  CONST.KEY_REPLACE.TIMES,
+  CONST.KEY_LINK.PROBLEM_PREFIX,
+  CONST.KEY_REPLACE.PROBLEMS,
+];
+
+/**
+ * コンテストページの文字列を生成するためのトークン配列
+ */
+const contestPage = [
+  CONST.KEY_LINK.DOMAIN,
+  CONST.KEY_LINK.CONTESTS,
+  CONST.KEY_LINK.SEPARATER,
+  CONST.KEY_REPLACE.CONTESTS,
+  CONST.KEY_REPLACE.TIMES,
+];
+
+/**
+ * 問題ページのリンクを生成する関数
+ * ※問題欄が空文字列の場合はコンテストページを生成する
+ * @param contests コンテスト名(ABC/ARC/AGC/AHC)
  * @param times コンテスト番号
  * @param problem 問題(A~H)
  * @returns 問題/コンテストURL
  */
-function createLink(contest: string, times: string, problem: string) {
+function createLink(contests: string, times: string, problem: string) {
   let page: string[];
   if (problem == "") {
     page = contestPage;
@@ -45,11 +66,11 @@ function createLink(contest: string, times: string, problem: string) {
   }
   let url = [];
   for (let i = 0; i < page.length; ++i) {
-    if (page[i] == key.contest) {
-      url.push(contest);
-    } else if (page[i] == key.times) {
+    if (page[i] == CONST.KEY_REPLACE.CONTESTS) {
+      url.push(contests);
+    } else if (page[i] == CONST.KEY_REPLACE.TIMES) {
       url.push(times);
-    } else if (page[i] == key.problem) {
+    } else if (page[i] == CONST.KEY_REPLACE.PROBLEMS) {
       url.push(problem);
     } else {
       url.push(page[i]);
@@ -59,9 +80,11 @@ function createLink(contest: string, times: string, problem: string) {
 }
 
 /**
- *
- * @param matchedString
- * @param document
+ * 文書内から正規表現にマッチする位置をすべて検索し、リンクオブジェクトを生成する関数
+ * リンクオブジェクトは重複を排除する
+ * @param document VSコードの文書オブジェクト
+ * @param regex 正規表現
+ * @param setLinks 生成済み管理hashSet
  * @returns
  */
 function generateLinkObject(document: vscode.TextDocument, regex: RegExp, setLinks: Set<number>) {
@@ -75,7 +98,6 @@ function generateLinkObject(document: vscode.TextDocument, regex: RegExp, setLin
     const matchedString: highlightString = {
       start: i.index,
       end: i.index + i[0].length,
-      content: i[0],
       link: url,
     };
     const startPos: vscode.Position = document.positionAt(matchedString.start);
@@ -87,13 +109,19 @@ function generateLinkObject(document: vscode.TextDocument, regex: RegExp, setLin
   }
   return links;
 }
-function addUrl(document: vscode.TextDocument, token: vscode.CancellationToken) {
+
+/**
+ * リンク生成エントリポイント
+ * 複数の正規表現を順にマッチさせてリンクオブジェクトを生成する
+ * @param document 文書オブジェクト
+ * @param tasks 長時間の処理を行うときのレスポンスオブジェクト
+ * @returns リンクオブジェクトをまとめた配列
+ */
+function addUrl(document: vscode.TextDocument, tasks: vscode.CancellationToken) {
   let links: vscode.DocumentLink[] = [];
-  const contestRegex = /[Aa][BRGHbrgh][Cc][0-9]{3}/g;
-  const problemRegex = /[Aa][BRGHbrgh][Cc][0-9]{3}[A-Ha-h]/g;
   let setLinks: Set<number> = new Set<number>();
-  links = links.concat(generateLinkObject(document, problemRegex, setLinks));
-  links = links.concat(generateLinkObject(document, contestRegex, setLinks));
+  links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.PROBLEM, setLinks));
+  links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.CONTEST, setLinks));
   return links;
 }
 export { addUrl };

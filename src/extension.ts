@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import * as highlightUrl from "./highlightUrl";
-import { link } from "fs";
 /**
  * 拡張機能が有効になったときに起動する関数
  * 各種機能をcontextに追加する
@@ -15,8 +14,4 @@ function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(linkProvider);
 }
 
-function deactivate() {
-  return;
-}
-
-export { activate, deactivate };
+export { activate };
