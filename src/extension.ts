@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as highlightUrl from "./highlightUrl";
 /**
  * 拡張機能が有効になったときに起動する関数
  * 各種機能をcontextに追加する
@@ -18,11 +19,10 @@ function activate(context: vscode.ExtensionContext) {
  */
 function generateEvents() {
   let events = Array(0);
-  events.push(vscode.workspace.onDidChangeTextDocument(addUrl));
+  // events.push(vscode.workspace.onDidChangeTextDocument(addUrl));
   return events;
 }
-
-function addUrl() {}
+vscode.languages.registerDocumentLinkProvider({ scheme: "file" }, { provideDocumentLinks: highlightUrl.addUrl });
 
 function deactivate() {
   return;
