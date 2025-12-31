@@ -4,7 +4,7 @@ import * as CONST from "./const";
  * ハイライト文字列のインターフェース
  * 文書全体のハイライト位置とURLの情報を持つ
  */
-interface highlightString {
+interface highlightInfo {
   /**
    * 文書内のハイライト半開区間の開始位置
    */
@@ -58,8 +58,23 @@ const contestPage = [
  * @returns 問題/コンテストURL
  */
 function createLink(contests: string, times: string, problem: string) {
+  /**
+   * URLとしてそのまま使える形に変えた文字を入れる変数
+   * (ほとんどの場合でA-Hだが、一部1-4などの数字が必要なため)
+   */
+  let linkStringProblem: string = problem;
+  if (problem == CONST.PROBLEM_DIFFS.CHAR_EX) {
+    linkStringProblem = CONST.PROBLEM_DIFFS.CHAR_H;
+  }
+  if (Number(times) <= 19) {
+    linkStringProblem = String(CONST.KEY_CONVERT_PROBLEMS[problem]);
+  }
+
+  /**
+   * リンクのひながたを入れる変数
+   */
   let page: string[];
-  if (problem == "") {
+  if (linkStringProblem == "") {
     page = contestPage;
   } else {
     page = problemPage;
@@ -71,7 +86,7 @@ function createLink(contests: string, times: string, problem: string) {
     } else if (page[i] == CONST.KEY_REPLACE.TIMES) {
       url.push(times);
     } else if (page[i] == CONST.KEY_REPLACE.PROBLEMS) {
-      url.push(problem);
+      url.push(linkStringProblem);
     } else {
       url.push(page[i]);
     }
@@ -94,16 +109,17 @@ function generateLinkObject(document: vscode.TextDocument, regex: RegExp, setLin
     if (setLinks.has(i.index)) {
       continue;
     }
-    const url = createLink(i[0].substring(0, 3), i[0].substring(3, 6), i[0].substring(6, 7));
-    const matchedString: highlightString = {
+    const matchedString: string = i[0].toUpperCase();
+    const url = createLink(matchedString.substring(0, 3), matchedString.substring(3, 6), matchedString.substring(6));
+    const linkInfo: highlightInfo = {
       start: i.index,
-      end: i.index + i[0].length,
+      end: i.index + matchedString.length,
       link: url,
     };
-    const startPos: vscode.Position = document.positionAt(matchedString.start);
-    const endPos: vscode.Position = document.positionAt(matchedString.end);
+    const startPos: vscode.Position = document.positionAt(linkInfo.start);
+    const endPos: vscode.Position = document.positionAt(linkInfo.end);
     const linkRange: vscode.Range = new vscode.Range(startPos, endPos);
-    const linkObject: vscode.Uri = vscode.Uri.parse(matchedString.link);
+    const linkObject: vscode.Uri = vscode.Uri.parse(linkInfo.link);
     links.push(new vscode.DocumentLink(linkRange, linkObject));
     setLinks.add(i.index);
   }
@@ -120,7 +136,9 @@ function generateLinkObject(document: vscode.TextDocument, regex: RegExp, setLin
 function addUrl(document: vscode.TextDocument, tasks: vscode.CancellationToken) {
   let links: vscode.DocumentLink[] = [];
   let setLinks: Set<number> = new Set<number>();
-  links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.PROBLEM, setLinks));
+  for (let i = 0; i < CONST.REGEX_PATTERNS.PROBLEMS.length; ++i) {
+    links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.PROBLEMS[i], setLinks));
+  }
   links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.CONTEST, setLinks));
   return links;
 }
