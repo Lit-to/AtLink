@@ -36,7 +36,7 @@ const KEY_REPLACE = {
    */
   TIMES: "{times}",
   /**
-   * コンテスト問題 (``A-H,Ex``)
+   * コンテスト問題 (``A-H``,``Ex``)
    */
   PROBLEMS: "{problem}",
 };
