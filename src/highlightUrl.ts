@@ -21,35 +21,6 @@ interface highlightInfo {
 }
 
 /**
- * 問題ページの文字列を生成するためのトークン配列
- */
-const problemPage = [
-  CONST.KEY_LINK.DOMAIN,
-  CONST.KEY_LINK.CONTESTS,
-  CONST.KEY_LINK.SEPARATER,
-  CONST.KEY_REPLACE.CONTESTS,
-  CONST.KEY_REPLACE.TIMES,
-  CONST.KEY_LINK.SEPARATER,
-  CONST.KEY_LINK.TASKS,
-  CONST.KEY_LINK.SEPARATER,
-  CONST.KEY_REPLACE.CONTESTS,
-  CONST.KEY_REPLACE.TIMES,
-  CONST.KEY_LINK.PROBLEM_PREFIX,
-  CONST.KEY_REPLACE.PROBLEMS,
-];
-
-/**
- * コンテストページの文字列を生成するためのトークン配列
- */
-const contestPage = [
-  CONST.KEY_LINK.DOMAIN,
-  CONST.KEY_LINK.CONTESTS,
-  CONST.KEY_LINK.SEPARATER,
-  CONST.KEY_REPLACE.CONTESTS,
-  CONST.KEY_REPLACE.TIMES,
-];
-
-/**
  * 問題ページのリンクを生成する関数
  * ※問題欄が空文字列の場合はコンテストページを生成する
  * @param contests コンテスト名(ABC/ARC/AGC/AHC)
@@ -70,14 +41,11 @@ function createLink(contests: string, times: string, problem: string) {
     linkStringProblem = String(CONST.KEY_CONVERT_PROBLEMS[problem]);
   }
 
-  /**
-   * リンクのひながたを入れる変数
-   */
   let page: string[];
   if (linkStringProblem == "") {
-    page = contestPage;
+    page = CONST.CONTEST_PAGE_TOKENS;
   } else {
-    page = problemPage;
+    page = CONST.PROBLEM_PAGE_TOKENS;
   }
   let url = [];
   for (let i = 0; i < page.length; ++i) {
