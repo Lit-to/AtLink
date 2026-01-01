@@ -1,7 +1,7 @@
 {
   "name": "atlink",
   "displayName": "AtLink",
-  "description": "",
+  "description": "AtCoderの問題リンクショートカットを作る拡張機能",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.107.0"
@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -40,5 +40,12 @@
     "eslint": "^9.25.1",
     "prettier": "^3.7.4",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@vscode/vsce": "^3.7.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lit-to/AtLink.git"
   }
 }
