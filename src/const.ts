@@ -53,45 +53,38 @@ const REGEX_PATTERNS = {
    */
   PROBLEM: /(A[BRGH]C)\d{3}([A-H]|EX)\d*/gi,
 };
+
 /**
- * 問題難易度A~Hのキー
- */
-const PROBLEM_DIFFS = {
-  CHAR_A: "A",
-  CHAR_B: "B",
-  CHAR_C: "C",
-  CHAR_D: "D",
-  CHAR_E: "E",
-  CHAR_F: "F",
-  CHAR_G: "G",
-  CHAR_H: "H",
-  CHAR_EX: "EX",
-  NUM_A: 1,
-  NUM_B: 2,
-  NUM_C: 3,
-  NUM_D: 4,
-  NUM_E: 5,
-  NUM_F: 6,
-  NUM_G: 7,
-  NUM_H: 8,
-};
-/**
- * 古すぎる問題のA~Hと1~8の対応表
+ * 問題のA~HとURL文字列の対応表
  */
 const KEY_CONVERT_PROBLEMS = {
-  [PROBLEM_DIFFS.CHAR_A]: PROBLEM_DIFFS.NUM_A,
-  [PROBLEM_DIFFS.CHAR_B]: PROBLEM_DIFFS.NUM_B,
-  [PROBLEM_DIFFS.CHAR_C]: PROBLEM_DIFFS.NUM_C,
-  [PROBLEM_DIFFS.CHAR_D]: PROBLEM_DIFFS.NUM_D,
-  [PROBLEM_DIFFS.CHAR_E]: PROBLEM_DIFFS.NUM_E,
-  [PROBLEM_DIFFS.CHAR_F]: PROBLEM_DIFFS.NUM_F,
-  [PROBLEM_DIFFS.CHAR_G]: PROBLEM_DIFFS.NUM_G,
-  [PROBLEM_DIFFS.CHAR_H]: PROBLEM_DIFFS.NUM_H,
+  LEGACY:{
+    "A": "1",
+    "B": "2",
+    "C": "3",
+    "D": "4",
+    "E": "5",
+    "F": "6",
+    "G": "7",
+    "H": "8",
+  },
+  LATEST:{
+    "A":"A",
+    "B":"B",
+    "C":"C",
+    "D":"D",
+    "E":"E",
+    "F":"F",
+    "G":"G",
+    "H":"H",
+    "EX":"H",
+  }
 };
+
 /**
  * 問題ページの文字列を生成するためのURL文字の配列
  */
-const PROBLEM_PAGE_TOKENS = [
+const TOKEN_PROBLEM_PAGE = [
   KEY_LINK.DOMAIN,
   KEY_LINK.CONTESTS,
   KEY_LINK.SEPARATER,
@@ -109,7 +102,7 @@ const PROBLEM_PAGE_TOKENS = [
 /**
  * コンテストページの文字列を生成するためのURL文字の配列
  */
-const CONTEST_PAGE_TOKENS = [
+const TOKEN_CONTEST_PAGE = [
   KEY_LINK.DOMAIN,
   KEY_LINK.CONTESTS,
   KEY_LINK.SEPARATER,
@@ -121,8 +114,7 @@ export {
   KEY_LINK,
   KEY_REPLACE,
   REGEX_PATTERNS,
-  PROBLEM_DIFFS,
   KEY_CONVERT_PROBLEMS,
-  PROBLEM_PAGE_TOKENS,
-  CONTEST_PAGE_TOKENS,
+  TOKEN_PROBLEM_PAGE,
+  TOKEN_CONTEST_PAGE,
 };

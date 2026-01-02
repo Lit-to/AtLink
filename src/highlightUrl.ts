@@ -25,14 +25,16 @@ function convertProblemString(times: string, problem: string) {
    * URLとしてそのまま使える形に変えた文字を入れる変数
    * (ほとんどの場合でA-Hだが、一部1-4などの数字が必要なため)
    */
-  let linkStringProblem: string = problem;
-  if (problem == CONST.PROBLEM_DIFFS.CHAR_EX) {
-    linkStringProblem = CONST.PROBLEM_DIFFS.CHAR_H;
+  if (!(problem in CONST.KEY_CONVERT_PROBLEMS.LEGACY)){
+    return "";
   }
+  const problemKey = problem as keyof typeof CONST.KEY_CONVERT_PROBLEMS.LEGACY;
   if (Number(times) <= 19) {
-    linkStringProblem = String(CONST.KEY_CONVERT_PROBLEMS[problem]);
+    return CONST.KEY_CONVERT_PROBLEMS.LEGACY[problemKey];
   }
-  return linkStringProblem;
+  else{
+    return CONST.KEY_CONVERT_PROBLEMS.LATEST[problemKey];
+  }
 }
 
 /**
@@ -48,9 +50,9 @@ function createLink(contests: string, times: string, problem: string) {
 
   let page: string[];
   if (linkStringProblem == "") {
-    page = CONST.CONTEST_PAGE_TOKENS;
+    page = CONST.TOKEN_CONTEST_PAGE;
   } else {
-    page = CONST.PROBLEM_PAGE_TOKENS;
+    page = CONST.TOKEN_PROBLEM_PAGE;
   }
   let url = [];
   for (let i = 0; i < page.length; ++i) {
