@@ -47,38 +47,27 @@ const REGEX_PATTERNS = {
   /**
    * コンテストページの正規表現
    */
-  CONTEST: /[A][BRGH][C][0-9]{3}/gi,
+  CONTEST: /A[BRGH]C[0-9]{3}/gi,
   /**
    * 問題ページの正規表現
    */
-  PROBLEM: /(A[BRGH]C)\d{3}([A-H]|EX)\d*/gi,
+  PROBLEM: /(A[BRGH]C)\d{3}(EX|F2|[A-H])/gi,
 };
 
 /**
  * 問題のA~HとURL文字列の対応表
  */
 const KEY_CONVERT_PROBLEMS = {
-  LEGACY: {
-    A: "1",
-    B: "2",
-    C: "3",
-    D: "4",
-    E: "5",
-    F: "6",
-    G: "7",
-    H: "8",
-  },
-  LATEST: {
-    A: "A",
-    B: "B",
-    C: "C",
-    D: "D",
-    E: "E",
-    F: "F",
-    G: "G",
-    H: "H",
-    EX: "H",
-  },
+  A: { LEGACY: "1", LATEST: "A" },
+  B: { LEGACY: "2", LATEST: "B" },
+  C: { LEGACY: "3", LATEST: "C" },
+  D: { LEGACY: "4", LATEST: "D" },
+  E: { LEGACY: "5", LATEST: "E" },
+  F: { LEGACY: "6", LATEST: "F" },
+  G: { LEGACY: "7", LATEST: "G" },
+  H: { LEGACY: "8", LATEST: "H" },
+  EX: { LEGACY: "", LATEST: "H" },
+  F2: { LEGACY: "", LATEST: "F2" },
 };
 
 /**
