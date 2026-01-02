@@ -47,20 +47,11 @@ const REGEX_PATTERNS = {
   /**
    * コンテストページの正規表現
    */
-  CONTEST: /(?!ABC316)[A][BRGH][C][0-9]{3}/gi,
+  CONTEST: /[A][BRGH][C][0-9]{3}/gi,
   /**
    * 問題ページの正規表現
    */
-  PROBLEMS: [
-    /ARC120F2/gi, //ARC120F2
-    /ABC(3(1[9]|[2-9]\d)|[4-9]\d\d|\d{4,})[A-G]/gi, // ABC319以降(A~G)
-    /ABC31[78](?:EX|[A-G])/gi, // ABC317,318(A~G,Ex)
-    /ABC(23[3-9]|2[4-9]\d|30\d|31[0-5])(?:EX|[A-G])/gi, // ABC233 ~ 315(A~G,Ex)
-    /ABC(21[2-9]|22\d|23[0-2])[A-H]/gi, // ABC212 ~ 232(A~H)
-    /ABC(12[6-9]|1[3-9]\d|20\d|21[01])[A-F]/gi, // ABC126 ~ 211(A~F)
-    /ABC(00[1-9]|0[1-9]\d|1[01]\d|12[0-5])[A-D]/gi, // ABC001 ~ 125(A~D)
-    /A[RGH]C[0-9]{3}[A-F]/gi, // ARC AGC AHC(回ごとにばらつきが大きいためすべて)
-  ],
+  PROBLEM: /(A[BRGH]C)\d{3}([A-H]|EX)\d*/gi,
 };
 /**
  * 問題難易度A~Hのキー

@@ -20,15 +20,7 @@ interface highlightInfo {
   link: string;
 }
 
-/**
- * 問題ページのリンクを生成する関数
- * ※問題欄が空文字列の場合はコンテストページを生成する
- * @param contests コンテスト名(ABC/ARC/AGC/AHC)
- * @param times コンテスト番号
- * @param problem 問題(A~H)
- * @returns 問題/コンテストURL
- */
-function createLink(contests: string, times: string, problem: string) {
+function convertProblemString(times: string, problem: string) {
   /**
    * URLとしてそのまま使える形に変えた文字を入れる変数
    * (ほとんどの場合でA-Hだが、一部1-4などの数字が必要なため)
@@ -40,6 +32,19 @@ function createLink(contests: string, times: string, problem: string) {
   if (Number(times) <= 19) {
     linkStringProblem = String(CONST.KEY_CONVERT_PROBLEMS[problem]);
   }
+  return linkStringProblem;
+}
+
+/**
+ * 問題ページのリンクを生成する関数
+ * ※問題欄が空文字列の場合はコンテストページを生成する
+ * @param contests コンテスト名(ABC/ARC/AGC/AHC)
+ * @param times コンテスト番号
+ * @param problem 問題(A~H)
+ * @returns 問題/コンテストURL
+ */
+function createLink(contests: string, times: string, problem: string) {
+  const linkStringProblem: string = convertProblemString(times, problem);
 
   let page: string[];
   if (linkStringProblem == "") {
@@ -104,9 +109,7 @@ function generateLinkObject(document: vscode.TextDocument, regex: RegExp, setLin
 function addUrl(document: vscode.TextDocument, tasks: vscode.CancellationToken) {
   let links: vscode.DocumentLink[] = [];
   let setLinks: Set<number> = new Set<number>();
-  for (let i = 0; i < CONST.REGEX_PATTERNS.PROBLEMS.length; ++i) {
-    links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.PROBLEMS[i], setLinks));
-  }
+  links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.PROBLEM, setLinks));
   links = links.concat(generateLinkObject(document, CONST.REGEX_PATTERNS.CONTEST, setLinks));
   return links;
 }
