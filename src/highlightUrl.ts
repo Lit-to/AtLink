@@ -25,14 +25,13 @@ function convertProblemString(times: string, problem: string) {
    * URLとしてそのまま使える形に変えた文字を入れる変数
    * (ほとんどの場合でA-Hだが、一部1-4などの数字が必要なため)
    */
-  if (!(problem in CONST.KEY_CONVERT_PROBLEMS.LEGACY)){
+  if (!(problem in CONST.KEY_CONVERT_PROBLEMS.LEGACY)) {
     return "";
   }
   const problemKey = problem as keyof typeof CONST.KEY_CONVERT_PROBLEMS.LEGACY;
   if (Number(times) <= 19) {
     return CONST.KEY_CONVERT_PROBLEMS.LEGACY[problemKey];
-  }
-  else{
+  } else {
     return CONST.KEY_CONVERT_PROBLEMS.LATEST[problemKey];
   }
 }

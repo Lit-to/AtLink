@@ -58,27 +58,27 @@ const REGEX_PATTERNS = {
  * 問題のA~HとURL文字列の対応表
  */
 const KEY_CONVERT_PROBLEMS = {
-  LEGACY:{
-    "A": "1",
-    "B": "2",
-    "C": "3",
-    "D": "4",
-    "E": "5",
-    "F": "6",
-    "G": "7",
-    "H": "8",
+  LEGACY: {
+    A: "1",
+    B: "2",
+    C: "3",
+    D: "4",
+    E: "5",
+    F: "6",
+    G: "7",
+    H: "8",
   },
-  LATEST:{
-    "A":"A",
-    "B":"B",
-    "C":"C",
-    "D":"D",
-    "E":"E",
-    "F":"F",
-    "G":"G",
-    "H":"H",
-    "EX":"H",
-  }
+  LATEST: {
+    A: "A",
+    B: "B",
+    C: "C",
+    D: "D",
+    E: "E",
+    F: "F",
+    G: "G",
+    H: "H",
+    EX: "H",
+  },
 };
 
 /**
@@ -110,11 +110,4 @@ const TOKEN_CONTEST_PAGE = [
   KEY_REPLACE.TIMES,
 ];
 
-export {
-  KEY_LINK,
-  KEY_REPLACE,
-  REGEX_PATTERNS,
-  KEY_CONVERT_PROBLEMS,
-  TOKEN_PROBLEM_PAGE,
-  TOKEN_CONTEST_PAGE,
-};
+export { KEY_LINK, KEY_REPLACE, REGEX_PATTERNS, KEY_CONVERT_PROBLEMS, TOKEN_PROBLEM_PAGE, TOKEN_CONTEST_PAGE };
